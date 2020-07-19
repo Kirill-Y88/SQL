@@ -1,0 +1,31 @@
+CREATE TABLE `city` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `Countrys_id` int NOT NULL,
+  `Regions_id` int NOT NULL,
+  `District_Name` varchar(45) DEFAULT NULL,
+  `City_Name` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `Country_id_idx` (`Countrys_id`),
+  KEY `Region_id_idx` (`Regions_id`),
+  CONSTRAINT `coun_id` FOREIGN KEY (`Countrys_id`) REFERENCES `country` (`id`),
+  CONSTRAINT `reg_id` FOREIGN KEY (`Regions_id`) REFERENCES `region` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+////////////
+
+CREATE TABLE `region` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `Country_id` int NOT NULL,
+  `Region_Name` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `Country_id_idx` (`Country_id`),
+  CONSTRAINT `Country_id` FOREIGN KEY (`Country_id`) REFERENCES `country` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+////////
+
+CREATE TABLE `country` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `country_name` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
