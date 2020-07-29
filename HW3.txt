@@ -1,0 +1,89 @@
+Выборка средней зп по отделам
+---
+select dept_name, avg (salary)
+from departments as de
+join dept_emp as dmp on de.dept_no = dmp.dept_no
+join salaries as sa on dmp.emp_no = sa.emp_no
+group by dept_name;
+---
+
+
+вывод сотрудника с макс зарплатой
+---
+use employees;
+select salary, first_name, last_name
+from employees as emp
+join salaries as sal
+on emp.emp_no = sal.emp_no
+order by salary desc
+limit 1;
+---
+
+удаление сотрудника с макс ЗП (команда не проходит, не видит таблицу/базу данных - пробовал различные варианты сс алиасами и без)
+---
+
+delete 
+from employess.emp
+where emp.emp_no = (
+select emp.emp_no
+from employees as emp
+join salaries as sal
+on emp.emp_no = sal.emp_no
+order by salary desc
+limit 1) ;
+---
+
+посчитать количество сотрудников во всех отделах
+---
+select dept_name , count(dmp.emp_no)
+from departments as de
+join dept_emp as dmp on de.dept_no = dmp.dept_no
+join salaries as sa on dmp.emp_no = sa.emp_no
+group by dept_name;
+---
+
+посчитать кол-во сотрудников в отделе и просуммировать зп отдела (ошибка Error Code: 1052. Column 'dept_name' in field list is ambiguous, 
+при добавлении имени таблицы к "dept_name" выходит ошибка Error Code: 1054. Unknown column ) 
+---
+SELECT dept_name, 'численность', 'зарплата'
+from ( select de.dept_name , count(dmp.emp_no) as 'численность'
+from departments as de
+join dept_emp as dmp on de.dept_no = dmp.dept_no
+join salaries as sa on dmp.emp_no = sa.emp_no
+group by dept_name) as table_1
+join (select de.dept_name, avg (salary) as 'зарплата'
+from departments as de
+join dept_emp as dmp on de.dept_no = dmp.dept_no
+join salaries as sa on dmp.emp_no = sa.emp_no
+group by dept_name) as table_2  
+on table_1.dept_name = table_2.dept_name
+;
+---
+
+Сделать запрос, в котором мы выберем все данные о городе – регион, страна.
+---
+SELECT  ci.title_ru, re.title_ru, co.title_ru
+FROM 
+geodata._cities as ci
+left join geodata._regions as re
+on ci.regions_id = re.id
+left join geodata._countries as co
+on co.id = re.country_id
+where ci.title_ru='Пермь'
+;
+----
+
+Выбрать все города из Московской области.
+---
+SELECT  ci.title_ru, re.title_ru, co.title_ru
+FROM 
+geodata._cities as ci
+left join geodata._regions as re
+on ci.regions_id = re.id
+left join geodata._countries as co
+on co.id = re.country_id
+where re.title_ru='Московская область'
+;
+---
+
+
