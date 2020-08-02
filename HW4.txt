@@ -1,0 +1,66 @@
+1) Представление на среднюю зарплату
+---
+CREATE VIEW middle_salary AS
+    SELECT 
+        dept_name, AVG(salary)
+    FROM
+        departments AS de
+            JOIN
+        dept_emp AS dmp ON de.dept_no = dmp.dept_no
+            JOIN
+        salaries AS sa ON dmp.emp_no = sa.emp_no
+    GROUP BY dept_name;
+---
+или :
+CREATE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `employees`.`middle_salary` AS
+    SELECT 
+        `de`.`dept_name` AS `dept_name`,
+        AVG(`sa`.`salary`) AS `AVG(salary)`
+    FROM
+        ((`employees`.`departments` `de`
+        JOIN `employees`.`dept_emp` `dmp` ON ((`de`.`dept_no` = `dmp`.`dept_no`)))
+        JOIN `employees`.`salaries` `sa` ON ((`dmp`.`emp_no` = `sa`.`emp_no`)))
+    GROUP BY `de`.`dept_name`
+
+---
+
+
+
+2) Функция поиска id сотрудника по Имени Фамилии
+CREATE DEFINER=`root`@`localhost` FUNCTION `man_id`(first_name char (16), last_name char(16)) RETURNS int
+    READS SQL DATA
+BEGIN
+	declare man_id INT;
+    set man_id = (
+    SELECT 
+    emp_no
+FROM
+    employees as empl
+    WHERE empl.first_name = first_name and
+    empl.last_name = last_name
+    limit 1
+    );
+RETURN man_id;
+END
+
+---
+
+
+
+3) Триггер
+DROP TRIGGER IF EXISTS `employees`.`dept_manager_AFTER_INSERT`;
+
+DELIMITER $$
+USE `employees`$$
+CREATE 
+    DEFINER = CURRENT_USER 
+    TRIGGER  `employees` . `dept_manager_AFTER_INSERT`
+ AFTER INSERT ON `dept_manager` FOR EACH ROW 
+    BEGIN 
+    INSERT INTO `employees`.`salaries` (`emp_no`, `salary`, `from_date`, `to_date`) VALUES (NEW.emp_no, '77777', '2000-03-24', '2000-03-25');
+    END$$
+DELIMITER ;
