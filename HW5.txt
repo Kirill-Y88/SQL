@@ -1,0 +1,21 @@
+
+Не придумал транзакции лучше, чем перевод сотрудника в другой отдел с установкой новой ЗП. 
+В транзакции лучше объединять часто повторяющиеся операции, выполняемые в определенной последовательности.(наверное)
+
+SET AUTOCOMMIT = 0;
+BEGIN; 
+UPDATE dept_emp
+SET dept_no = 'd001'
+WHERE emp_no = 10083;
+UPDATE salaries
+SET salary = 10000
+WHERE emp_no = 10083 AND to_date = '9999-01-01';
+COMMIT;SET AUTOCOMMIT = 0;
+BEGIN; 
+UPDATE dept_emp
+SET dept_no = 'd001'
+WHERE emp_no = 10083;
+UPDATE salaries
+SET salary = 10000
+WHERE emp_no = 10083 AND to_date = '9999-01-01';
+COMMIT;
